@@ -1,26 +1,28 @@
 import {Request, Response} from 'express'
-import MessageModel, { Message } from '../models/MessageModel'
+import MessageModel, { InsertMessage, Message } from '../models/MessageModel'
 
 const MessageController = {
     get : async (req: Request, res: Response) => {
         let success: boolean;
         let message: string;
         let status: number;
-        let data: Message[] | {};
+        let data: Message[] | [];
 
         MessageModel.findMany().then((messages) => {
             success = true;
             message = 'Data fetched succesfully.';
             status = 200;
             data = messages
+            res.status(status)
         }).catch((err) => {
             success = false;
-            message = 'Data fetching failed.';
-            status = 200;
-            data = {}
+            message = 'Internal server error.';
+            status = 500;
+            data = []
             if (err) {
                 throw err
             }
+            res.status(status)
         }).finally(() => {
             res.json({
                 success,
@@ -30,8 +32,8 @@ const MessageController = {
         })
     },
     post: (req: Request, res: Response) => {
-        let data = req.body
-        res.json({data})
+        let message: InsertMessage = req.body
+        res.json({data: message})
     },
     delete: (req: Request, res: Response) => {
         res.json({data: 'Message deleted'})
