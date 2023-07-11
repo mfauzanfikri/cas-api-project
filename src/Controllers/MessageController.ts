@@ -8,19 +8,15 @@ const MessageController = {
         let status: number;
         let data: Message[] | MessageData[];
 
-        MessageModel.findAll({
-            id: true,
-            email: true,
-            name: true,
-            message: true
-        })
+        MessageModel.findMany()
         .then((messages) => {
             success = true;
             message = 'Data fetched succesfully.';
             status = 200;
             data = messages
             res.status(status)
-        }).catch((err) => {
+        })
+        .catch((err) => {
             success = false;
             message = 'Internal server error.';
             status = 500;
@@ -29,10 +25,12 @@ const MessageController = {
                 throw err
             }
             res.status(status)
-        }).finally(() => {
+        })
+        .finally(() => {
             res.json({
                 success,
                 status,
+                message,
                 data
             })
         })
