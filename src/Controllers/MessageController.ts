@@ -1,14 +1,20 @@
 import {Request, Response} from 'express'
-import MessageModel, { InsertMessage, Message } from '../models/MessageModel'
+import MessageModel, { InsertMessage, Message, MessageData } from '../models/MessageModel'
 
 const MessageController = {
     get : async (req: Request, res: Response) => {
         let success: boolean;
         let message: string;
         let status: number;
-        let data: Message[] | [];
+        let data: Message[] | MessageData[];
 
-        MessageModel.findMany().then((messages) => {
+        MessageModel.findAll({
+            id: true,
+            email: true,
+            name: true,
+            message: true
+        })
+        .then((messages) => {
             success = true;
             message = 'Data fetched succesfully.';
             status = 200;
